@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mosharof Hossain | Data Analyst Portfolio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #111111;
+      --surface: #1a1a1a;
+      --text: #e8e4df;
+      --muted: #6b6560;
+      --accent: #c4f542;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      cursor: default;
+      user-select: none;
+    }
+
+    canvas { position: fixed; top: 0; left: 0; z-index: 0; }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .header {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 32px 40px;
+      pointer-events: auto;
+    }
+
+    .logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .logo span { color: var(--accent); }
+
+    nav { display: flex; gap: 32px; }
+
+    nav a {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+      cursor: pointer;
+    }
+
+    nav a:hover { color: var(--text); }
+
+    .ticker {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      gap: 3px;
+      opacity: 0.35;
+    }
+
+    .ticker-bar {
+      width: 2px;
+      height: 14px;
+      background: var(--muted);
+      animation: tickerPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes tickerPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
+      50% { opacity: 1; transform: scaleY(1); }
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 32px 40px;
+      pointer-events: auto;
+    }
+
+    .footer-left p {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .footer-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .footer-right a {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+      cursor: pointer;
+    }
+
+    .footer-right a:hover { color: var(--accent); }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.5;
+      animation: hintFloat 2s ease-in-out infinite;
+    }
+
+    .scroll-hint span {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 30px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes hintFloat {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(5px); }
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    .project-info {
+      position: absolute;
+      bottom: 140px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.5s, transform 0.5s;
+      pointer-events: none;
+    }
+
+    .project-info.visible {
+      opacity: 1;
+    }
+
+    .project-info h2 {
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .project-info p {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    .counter {
+      position: absolute;
+      top: 50%;
+      right: 40px;
+      transform: translateY(-50%);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 2px;
+    }
+
+    .counter .current { color: var(--text); font-size: 18px; }
+  </style>
+</head>
+<body>
+  <canvas id="scene"></canvas>
+
+  <div class="overlay">
+    <div class="header">
+      <div class="logo">DATA<span>VOX</span></div>
+      <nav>
+        <a href="#">Work</a>
+        <a href="#">About</a>
+      </nav>
+    </div>
+
+    <div class="ticker" id="ticker"></div>
+
+    <div class="project-info" id="projectInfo">
+      <h2 id="projectTitle">—</h2>
+      <p id="projectDesc">—</p>
+    </div>
+
+    <div class="counter" id="counter">
+      <span class="current">01</span> / 10
+    </div>
+
+    <div class="scroll-hint">
+      <span>Scroll to explore</span>
+      <div class="scroll-line"></div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-left">
+        <p>Data Analyst & Digital Marketing Specialist</p>
+        <p>Available for Work (Immediate Start)</p>
+      </div>
+      <div class="footer-right">
+        <a href="mailto:kshrabon782@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/mosharof-hossain-qa/" target="_blank">LinkedIn</a>
+        <a href="https://github.com/mosharof-hossain" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const canvas = document.getElementById('scene');
+      const ctx = canvas.getContext('2d');
+      let W, H;
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Ticker bars
+      const ticker = document.getElementById('ticker');
+      for (let i = 0; i < 20; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'ticker-bar';
+        bar.style.animationDelay = `${i * 0.08}s`;
+        ticker.appendChild(bar);
+      }
+
+      // ✅ Your projects (10 projects)
+      const projects = [
+        {
+          title: 'Sales Data Dashboard',
+          desc: 'Excel · Interactive Dashboard · Slicers · Revenue Trends',
+          hue: 80,
+          category: 'VIZ / BI'
+        },
+        {
+          title: 'Customer Churn Analysis',
+          desc: 'Churn patterns · Statistics · Visualization',
+          hue: 200,
+          category: 'STAT / VIZ'
+        },
+        {
+          title: 'Social Media Marketing Report',
+          desc: 'Instagram/Facebook · Engagement · Top Content',
+          hue: 280,
+          category: 'BI / MARKETING'
+        },
+        {
+          title: 'Data Cleaning Project',
+          desc: '1000+ Rows · Excel · Python · Data Quality',
+          hue: 160,
+          category: 'CLEAN / ENG'
+        },
+        {
+          title: 'YouTube Content Analysis',
+          desc: 'YouTube Data · Keywords · Watch-time · Patterns',
+          hue: 0,
+          category: 'NLP / VIZ'
+        },
+        {
+          title: 'E-commerce Product Analysis',
+          desc: 'Ratings & Pricing · Reviews · Top Categories',
+          hue: 30,
+          category: 'BI / STAT'
+        },
+        {
+          title: 'Digital Marketing A/B Test',
+          desc: 'A/B Testing · Clicks & Conversions · Ad Creatives',
+          hue: 50,
+          category: 'STAT / MARKETING'
+        },
+        {
+          title: 'Data Entry Accuracy Improvement',
+          desc: '2000+ Rows · 100% Accuracy · Validation',
+          hue: 80,
+          category: 'OPS / ENG'
+        },
+        {
+          title: 'Power BI Mini Dashboard',
+          desc: '3-Page Dashboard · KPIs · DAX · Filters',
+          hue: 200,
+          category: 'BI / VIZ'
+        },
+        {
+          title: 'Beginner SQL Queries Project',
+          desc: 'SELECT, WHERE, GROUP BY · Business Analysis',
+          hue: 0,
+          category: 'SQL / ENG'
+        }
+      ];
+
+      // Procedural card images
+      const cardW = 260, cardH = 360;
+      const cardImages = [];
+
+      function generateCardImage(project, w, h) {
+        const offscreen = document.createElement('canvas');
+        offscreen.width = w;
+        offscreen.height = h;
+        const c = offscreen.getContext('2d');
+
+        // Background gradient
+        const grad = c.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0, `hsl(${project.hue}, 15%, 14%)`);
+        grad.addColorStop(1, `hsl(${project.hue}, 20%, 8%)`);
+        c.fillStyle = grad;
+        c.fillRect(0, 0, w, h);
+
+        // Data viz mock
+        const vizType = Math.random();
+        if (vizType < 0.3) {
+          // Bar chart
+          const bars = 8 + Math.floor(Math.random() * 8);
+          const barW = (w * 0.7) / bars;
+          const startX = w * 0.15;
+          for (let i = 0; i < bars; i++) {
+            const barH = Math.random() * h * 0.5 + h * 0.1;
+            const alpha = 0.3 + Math.random() * 0.5;
+            c.fillStyle = `hsla(${project.hue}, 60%, 55%, ${alpha})`;
+            c.fillRect(startX + i * barW, h - 40 - barH, barW - 3, barH);
+          }
+        } else if (vizType < 0.6) {
+          // Line chart
+          c.strokeStyle = `hsla(${project.hue}, 70%, 60%, 0.7)`;
+          c.lineWidth = 2;
+          c.beginPath();
+          for (let i = 0; i <= 20; i++) {
+            const x = (w * 0.1) + (i / 20) * (w * 0.8);
+            const y = h * 0.3 + Math.sin(i * 0.5 + project.hue) * h * 0.15 + Math.random() * h * 0.05;
+            i === 0 ? c.moveTo(x, y) : c.lineTo(x, y);
+          }
+          c.stroke();
+
+          // Area fill
+          c.lineTo(w * 0.9, h * 0.85);
+          c.lineTo(w * 0.1, h * 0.85);
+          c.closePath();
+          c.fillStyle = `hsla(${project.hue}, 60%, 50%, 0.1)`;
+          c.fill();
+
+          // Grid
+          c.strokeStyle = `hsla(${project.hue}, 20%, 40%, 0.15)`;
+          c.lineWidth = 0.5;
+          for (let i = 0; i < 5; i++) {
+            const y = h * 0.2 + i * h * 0.15;
+            c.beginPath();
+            c.moveTo(w * 0.1, y);
+            c.lineTo(w * 0.9, y);
+            c.stroke();
+          }
+        } else if (vizType < 0.8) {
+          // Scatter plot
+          const dots = 30 + Math.floor(Math.random() * 30);
+          for (let i = 0; i < dots; i++) {
+            const x = w * 0.1 + Math.random() * w * 0.8;
+            const y = h * 0.1 + Math.random() * h * 0.7;
+            const r = 2 + Math.random() * 5;
+            c.beginPath();
+            c.arc(x, y, r, 0, Math.PI * 2);
+            c.fillStyle = `hsla(${project.hue + Math.random() * 40 - 20}, 60%, 55%, ${0.3 + Math.random() * 0.5})`;
+            c.fill();
+          }
+        } else {
+          // Heatmap / matrix
+          const cols = 8; const rows = 6;
+          const cellW = (w * 0.7) / cols;
+          const cellH = (h * 0.6) / rows;
+          const sx = w * 0.15, sy = h * 0.2;
+          for (let r = 0; r < rows; r++) {
+            for (let cl = 0; cl < cols; cl++) {
+              const val = Math.random();
+              c.fillStyle = `hsla(${project.hue}, ${40 + val * 40}%, ${15 + val * 35}%, ${0.4 + val * 0.5})`;
+              c.fillRect(sx + cl * cellW + 1, sy + r * cellH + 1, cellW - 2, cellH - 2);
+            }
+          }
+        }
+
+        // Category label
+        c.fillStyle = `hsla(${project.hue}, 60%, 60%, 0.8)`;
+        c.font = `bold ${Math.floor(w * 0.06)}px 'Space Mono', monospace`;
+        c.fillText(project.category, w * 0.08, h * 0.12);
+
+        // Border
+        c.strokeStyle = `hsla(${project.hue}, 40%, 40%, 0.25)`;
+        c.lineWidth = 1;
+        c.strokeRect(0, 0, w, h);
+
+        return offscreen;
+      }
+
+      // Pre‑render all cards
+      projects.forEach(p => cardImages.push(generateCardImage(p, cardW, cardH)));
+
+      // Scroll / tunnel state
+      let scrollProgress = 0;
+      let targetScroll = 0;
+      let mouseX = 0, mouseY = 0;
+      let smoothMouseX = 0, smoothMouseY = 0;
+
+      window.addEventListener('wheel', (e) => {
+        targetScroll += e.deltaY * 0.0008;
+        targetScroll = Math.max(-0.5, Math.min(targetScroll, projects.length - 0.5));
+      }, { passive: true });
+
+      // Touch support
+      let touchStartY = 0;
+      window.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        const dy = touchStartY - e.touches[0].clientY;
+        touchStartY = e.touches[0].clientY;
+        targetScroll += dy * 0.003;
+        targetScroll = Math.max(-0.5, Math.min(targetScroll, projects.length - 0.5));
+      }, { passive: true });
+
+      // Keyboard navigation
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          targetScroll = Math.min(targetScroll + 0.8, projects.length - 0.5);
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          targetScroll = Math.max(targetScroll - 0.8, -0.5);
+        }
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / W - 0.5) * 2;
+        mouseY = (e.clientY / H - 0.5) * 2;
+      });
+
+      // 3D projection
+      function project3D(x, y, z) {
+        const fov = 600;
+        const scale = fov / (fov + z);
+        return {
+          x: W / 2 + x * scale,
+          y: H / 2 + y * scale,
+          scale: scale
+        };
+      }
+
+      // Helper: draw an affine‑transformed textured triangle
+      function drawTexturedTriangle(img, sw, sh,
+        x0, y0, u0, v0,
+        x1, y1, u1, v1,
+        x2, y2, u2, v2)
+      {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.lineTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.closePath();
+        ctx.clip();
+
+        // Affine matrix: [a b c; d e f] maps (u,v) to (x,y)
+        const denom = (u0 - u2) * (v1 - v2) - (u1 - u2) * (v0 - v2);
+        if (Math.abs(denom) < 0.01) {
+          ctx.restore();
+          return;
+        }
+
+        const a = ((x0 - x2) * (v1 - v2) - (x1 - x2) * (v0 - v2)) / denom;
+        const b = ((x0 - x2) * (u1 - u2) - (x1 - x2) * (u0 - u2)) / -denom;
+        const c = x0 - a * u0 - b * v0;
+        const d = ((y0 - y2) * (v1 - v2) - (y1 - y2) * (v0 - v2)) / denom;
+        const e = ((y0 - y2) * (u1 - u2) - (y1 - y2) * (u0 - u2)) / -denom;
+        const f = y0 - d * u0 - e * v0;
+
+        ctx.setTransform(a, d, b, e, c, f);
+        ctx.drawImage(img, 0, 0, sw, sh);
+        ctx.restore();
+      }
+
+      // Draw a single card with correct perspective texturing
+      function drawCard(img, x3d, y3d, z3d, rotY, alpha) {
+        if (z3d < -500 || alpha <= 0) return;
+
+        const halfW = cardW / 2, halfH = cardH / 2;
+        const cosR = Math.cos(rotY), sinR = Math.sin(rotY);
+
+        const corners3D = [
+          { x: x3d + (-halfW) * cosR, y: y3d - halfH, z: z3d + (-halfW) * sinR },
+          { x: x3d + ( halfW) * cosR, y: y3d - halfH, z: z3d + ( halfW) * sinR },
+          { x: x3d + ( halfW) * cosR, y: y3d + halfH, z: z3d + ( halfW) * sinR },
+          { x: x3d + (-halfW) * cosR, y: y3d + halfH, z: z3d + (-halfW) * sinR },
+        ];
+
+        const p = corners3D.map(c => project3D(c.x, c.y, c.z));
+
+        // Quick bounds check
+        const minX = Math.min(...p.map(pt => pt.x));
+        const maxX = Math.max(...p.map(pt => pt.x));
+        const minY = Math.min(...p.map(pt => pt.y));
+        const maxY = Math.max(...p.map(pt => pt.y));
+        if (maxX < -50 || minX > W + 50 || maxY < -50 || minY > H + 50) return;
+
+        ctx.save();
+        ctx.globalAlpha = alpha;
+
+        const srcW = img.width, srcH = img.height;
+
+        // Two triangles covering the quad
+        drawTexturedTriangle(img, srcW, srcH,
+          p[0].x, p[0].y, 0, 0,
+          p[1].x, p[1].y, srcW, 0,
+          p[2].x, p[2].y, srcW, srcH);
+        drawTexturedTriangle(img, srcW, srcH,
+          p[0].x, p[0].y, 0, 0,
+          p[2].x, p[2].y, srcW, srcH,
+          p[3].x, p[3].y, 0, srcH);
+
+        // Edge highlight
+        ctx.strokeStyle = `rgba(200,200,200,${0.08 * alpha})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(p[0].x, p[0].y);
+        ctx.lineTo(p[1].x, p[1].y);
+        ctx.lineTo(p[2].x, p[2].y);
+        ctx.lineTo(p[3].x, p[3].y);
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.restore();
+        return { cx: (p[0].x + p[2].x) / 2, cy: (p[0].y + p[2].y) / 2, avgScale: p[0].scale };
+      }
+
+      // Overlay elements
+      const projectInfo = document.getElementById('projectInfo');
+      const projectTitle = document.getElementById('projectTitle');
+      const projectDesc = document.getElementById('projectDesc');
+      const counterEl = document.getElementById('counter');
+
+      // Frame‑independent animation
+      let lastTime = performance.now();
+      let time = 0;
+
+      function animate(now) {
+        requestAnimationFrame(animate);
+
+        const dt = Math.min((now - lastTime) / 1000, 0.1);
+        lastTime = now;
+        time += dt;
+
+        ctx.clearRect(0, 0, W, H);
+
+        // Smooth scroll & mouse
+        scrollProgress += (targetScroll - scrollProgress) * 0.06;
+        smoothMouseX += (mouseX - smoothMouseX) * 0.05;
+        smoothMouseY += (mouseY - smoothMouseY) * 0.05;
+
+        // Ambient particles
+        ctx.fillStyle = 'rgba(200,200,200,0.015)';
+        for (let i = 0; i < 40; i++) {
+          const px = ((i * 137.5 + time * 10) % W);
+          const py = ((i * 97.3 + time * 5 + Math.sin(i + time) * 20) % H);
+          ctx.beginPath();
+          ctx.arc(px, py, 1, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Build card list with depth sorting
+        const cards = [];
+        for (let i = 0; i < projects.length; i++) {
+          const offset = i - scrollProgress;
+          const z = offset * 300;
+          if (z < -550 || z > 3000) continue;
+
+          const spread = Math.max(0, offset) * 0.3;
+          const side = (i % 2 === 0) ? -1 : 1;
+          const xBase = side * (120 + spread * 100);
+          const yBase = Math.sin(i * 0.7) * 30;
+
+          const parallaxStr = Math.max(0, 1 - Math.abs(offset) * 0.15);
+          const x3d = xBase + smoothMouseX * 30 * parallaxStr;
+          const y3d = yBase + smoothMouseY * 20 * parallaxStr;
+          const rotY = side * (0.15 + spread * 0.04);
+
+          let alpha = 1;
+          if (offset < 0) alpha = Math.max(0, 1 + offset * 0.8);
+          if (offset > 6) alpha = Math.max(0, 1 - (offset - 6) * 0.3);
+          if (Math.abs(offset) < 0.5) alpha = Math.min(1, alpha * 1.2);
+
+          cards.push({ i, x3d, y3d, z, rotY, alpha });
+        }
+
+        // Sort far‑to‑near
+        cards.sort((a, b) => b.z - a.z);
+        for (const card of cards) {
+          drawCard(cardImages[card.i], card.x3d, card.y3d, card.z, card.rotY, card.alpha);
+        }
+
+        // Vanishing point glow
+        const grd = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, 300);
+        grd.addColorStop(0, 'rgba(196, 245, 66, 0.02)');
+        grd.addColorStop(1, 'rgba(196, 245, 66, 0)');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, W, H);
+
+        // Project info overlay
+        const nearestIdx = Math.round(scrollProgress);
+        const clampedIdx = Math.max(0, Math.min(projects.length - 1, nearestIdx));
+        const distToNearest = Math.abs(scrollProgress - clampedIdx);
+
+        if (distToNearest < 0.4) {
+          projectInfo.classList.add('visible');
+          projectTitle.textContent = projects[clampedIdx].title;
+          projectDesc.textContent = projects[clampedIdx].desc;
+        } else {
+          projectInfo.classList.remove('visible');
+        }
+
+        counterEl.innerHTML = `<span class="current">${String(clampedIdx + 1).padStart(2, '0')}</span> / ${String(projects.length).padStart(2, '0')}`;
+      }
+
+      // Start animation
+      requestAnimationFrame(animate);
+    })();
+  </script>
+</body>
+</html>
