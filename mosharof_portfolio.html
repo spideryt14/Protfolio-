@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mosharof Hossain | Data Analytics Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #050505;
+            --card-bg: #0f0f0f;
+            --accent-color: #00d2ff;
+            --text-white: #ffffff;
+            --text-dim: #b0b0b0;
+            --gradient: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Custom Scrollbar --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
+
+        /* --- Header / Navbar --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 30px 8%;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .logo span { color: var(--accent-color); }
+
+        .job-title-nav {
+            font-size: 14px;
+            color: var(--text-dim);
+            border-left: 2px solid var(--accent-color);
+            padding-left: 10px;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 5%;
+            position: relative;
+        }
+
+        .available-badge {
+            background: rgba(0, 210, 255, 0.1);
+            color: var(--accent-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--accent-color);
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 210, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0); }
+        }
+
+        .hero h1 {
+            font-size: 80px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .hero h2 {
+            font-size: 80px;
+            font-weight: 700;
+            font-style: italic;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: -10px;
+        }
+
+        .hero p {
+            max-width: 600px;
+            color: var(--text-dim);
+            margin-top: 30px;
+            font-size: 18px;
+        }
+
+        /* --- Section Styling --- */
+        section {
+            padding: 100px 10% 50px;
+        }
+
+        .section-title {
+            font-size: 40px;
+            margin-bottom: 50px;
+            color: var(--accent-color);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 4px;
+            background: var(--accent-color);
+            bottom: -10px;
+            left: 0;
+        }
+
+        /* --- Skills Section --- */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-card {
+            background: var(--card-bg);
+            padding: 30px 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #222;
+            transition: 0.3s;
+        }
+
+        .skill-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-10px);
+            background: rgba(0, 210, 255, 0.05);
+        }
+
+        .skill-card i {
+            font-size: 35px;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        /* --- Bio Section --- */
+        .bio-box {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .bio-box p {
+            font-size: 18px;
+            color: var(--text-dim);
+            margin-bottom: 15px;
+        }
+
+        /* --- Experience & Education --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-card h3 { color: var(--accent-color); margin-bottom: 5px; }
+        .info-card span { color: #888; font-size: 14px; }
+        .info-card ul { margin-top: 15px; margin-left: 20px; color: var(--text-dim); }
+
+        /* --- Contact --- */
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 18px;
+            color: var(--text-white);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .contact-item i {
+            width: 50px;
+            height: 50px;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--accent-color);
+        }
+
+        .contact-item:hover { color: var(--accent-color); }
+
+        .social-links {
+            margin-top: 50px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-links a {
+            font-size: 24px;
+            color: var(--text-white);
+            transition: 0.3s;
+        }
+
+        .social-links a:hover { color: var(--accent-color); transform: scale(1.2); }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .hero h1, .hero h2 { font-size: 45px; }
+            .grid-container { grid-template-columns: 1fr; }
+            nav { padding: 20px 5%; }
+        }
+
+        /* Floating Background Circles */
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,210,255,0.15) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="circle" style="width: 400px; height: 400px; top: -100px; right: -100px;"></div>
+    <div class="circle" style="width: 300px; height: 300px; bottom: 10%; left: -50px;"></div>
+
+    <nav>
+        <div class="logo">MOSHAROF<span>.</span></div>
+        <div class="job-title-nav">Data Analytics</div>
+    </nav>
+
+    <section class="hero">
+        <div class="available-badge" data-aos="fade-down">
+            <i class="fas fa-circle" style="font-size: 8px; margin-right: 5px;"></i> Available for work
+        </div>
+        <h1 data-aos="fade-up" data-aos-delay="200">Modern Data</h1>
+        <h2 data-aos="fade-up" data-aos-delay="400">Specialist!</h2>
+        <p data-aos="fade-up" data-aos-delay="600">
+            Professional Data Analytics & Cleaning Specialist focusing on building clean, high-performance datasets for real-world business solutions.
+        </p>
+    </section>
+
+    <section id="skills">
+        <h2 class="section-title" data-aos="fade-right">Tech Stack</h2>
+        <div class="skills-container">
+            <div class="skill-card" data-aos="zoom-in">
+                <i class="fas fa-file-excel"></i>
+                <p>Advanced Excel</p>
+            </div>
+            <div class="skill-card" data-aos="zoom-in" data-aos-delay="100">
+                <i class="fas fa-table"></i>
+                <p>Google Sheets</p>
+            </div>
+            <div class="skill-card" data-aos="zoom-in" data-aos-delay="200">
+                <i class="fas fa-broom"></i>
+                <p>Data Cleaning</p>
+            </div>
+            <div class="skill-card" data-aos="zoom-in" data-aos-delay="300">
+                <i class="fas fa-chart-pie"></i>
+                <p>Data Visualization</p>
+            </div>
+            <div class="skill-card" data-aos="zoom-in" data-aos-delay="400">
+                <i class="fas fa-database"></i>
+                <p>SQL Fundamentals</p>
+            </div>
+            <div class="skill-card" data-aos="zoom-in" data-aos-delay="500">
+                <i class="fas fa-chart-line"></i>
+                <p>Power BI</p>
+            </div>
+            <div class="skill-card" data-aos="zoom-in" data-aos-delay="600">
+                <i class="fab fa-python"></i>
+                <p>Python (Pandas)</p>
+            </div>
+            <div class="skill-card" data-aos="zoom-in" data-aos-delay="700">
+                <i class="fas fa-check-double"></i>
+                <p>Data Validation</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2 class="section-title" data-aos="fade-right">Hello!</h2>
+        <div class="bio-box" data-aos="fade-up">
+            <p>I am <strong>Mosharof Hossain</strong>, a Data Entry & Data Cleaning Specialist with a sharp eye for accuracy and a strong command of Microsoft Excel and Google Sheets.</p>
+            <p>I handle large datasets with precision — cleaning, formatting, validating, and correcting errors while maintaining full data integrity. I work fast, meet tight deadlines, and treat every row of data as if it matters, because it does.</p>
+            <p>What sets me apart is <strong>consistency</strong>. Whether it's removing duplicates, standardizing formats, or catching hidden errors others miss — I deliver clean, reliable outputs every time.</p>
+        </div>
+    </section>
+
+    <section id="experience">
+        <div class="grid-container">
+            <div>
+                <h2 class="section-title" data-aos="fade-right">Experience</h2>
+                <div class="info-card" data-aos="fade-up">
+                    <h3>Freelance Data Specialist</h3>
+                    <span>Jan 2024 – Present | Remote / Self-Employed</span>
+                    <ul>
+                        <li>Cleaned and organized large datasets with 2000+ rows, ensuring high data accuracy.</li>
+                        <li>Prepared summary reports and visualizations using Excel Pivot Tables.</li>
+                        <li>Supported decision-making through clear data formatting and validation.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="section-title" data-aos="fade-right">Education</h2>
+                <div class="info-card" data-aos="fade-up">
+                    <h3>Intermediate</h3>
+                    <span>2017 - 2019 | Cheora Govt. College</span>
+                    <p style="color: var(--text-dim); font-size: 14px; margin-top: 10px;">Developed strong analytical thinking and responsibility.</p>
+                </div>
+                <div class="info-card" data-aos="fade-up" data-aos-delay="200">
+                    <h3>Secondary School Certificate</h3>
+                    <span>2013 - 2017 | Shangishwor High School</span>
+                    <p style="color: var(--text-dim); font-size: 14px; margin-top: 10px;">Focused on discipline, punctuality, and academic excellence.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" style="background: #0a0a0a;">
+        <h2 class="section-title" data-aos="fade-right">Get In Touch</h2>
+        <div class="contact-info">
+            <a href="mailto:kshrabon782@gmail.com" class="contact-item" data-aos="fade-up">
+                <i class="fas fa-envelope"></i> kshrabon782@gmail.com
+            </a>
+            <a href="tel:+966560665201" class="contact-item" data-aos="fade-up" data-aos-delay="100">
+                <i class="fas fa-phone"></i> +966 560665201
+            </a>
+            <a href="https://devtoolsninja.site/" target="_blank" class="contact-item" data-aos="fade-up" data-aos-delay="200">
+                <i class="fas fa-globe"></i> devtoolsninja.site
+            </a>
+        </div>
+
+        <div class="social-links">
+            <a href="https://github.com/spideryt14" target="_blank" data-aos="zoom-in"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/mosharof-hossain-/" target="_blank" data-aos="zoom-in" data-aos-delay="100"><i class="fab fa-linkedin"></i></a>
+        </div>
+        
+        <p style="margin-top: 80px; color: #444; font-size: 14px; text-align: center;">
+            &copy; 2024 Mosharof Hossain. All rights reserved.
+        </p>
+    </section>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize Animations
+        AOS.init({
+            duration: 1000,
+            once: false,
+            mirror: true
+        });
+    </script>
+</body>
+</html>
